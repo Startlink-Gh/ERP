@@ -149,7 +149,6 @@ const Overview = () => {
       <Row gutter={16}>
         <Col xs={24} sm={12} md={6}>
           <StatCard
-            type='fill'
             title='Campaigns'
             value={103}
             icon={<Bookmark size={20} strokeWidth={1} />}
@@ -159,7 +158,6 @@ const Overview = () => {
         </Col>
         <Col xs={24} sm={12} md={6}>
           <StatCard
-            type='fill'
             title='Customers'
             value={230}
             icon={<PhoneCall size={20} strokeWidth={1} />}
@@ -169,7 +167,6 @@ const Overview = () => {
         </Col>
         <Col xs={24} sm={12} md={6}>
           <StatCard
-            type='fill'
             title='Queries'
             value={323}
             icon={<Bell size={20} strokeWidth={1} />}
@@ -179,7 +176,6 @@ const Overview = () => {
         </Col>
         <Col xs={24} sm={12} md={6}>
           <StatCard
-            type='fill'
             title='Opens'
             value={870}
             icon={<MessageCircle size={20} strokeWidth={1} />}
@@ -215,7 +211,7 @@ const Overview = () => {
         </NoSSR>
       </Card>
 
-      {/* <Row gutter={16}>
+      <Row gutter={16}>
         <Col sm={24} md={8} className='mb-4'>
           <Card bodyStyle={{ padding: 0 }}>
             <Row type='flex' align='middle' justify='center' gutter={16} className='py-4'>
@@ -359,7 +355,7 @@ const Overview = () => {
         </Col>
       </Row>
 
-      <Row gutter={16}>
+      {/* <Row gutter={16}>
         <Col md={24} lg={12}>
           <WeatherCard city='harare' country='zw' days={7} />
         </Col>
