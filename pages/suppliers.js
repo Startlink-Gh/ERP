@@ -1,6 +1,9 @@
-import { Table, Input, Modal, Button, Popconfirm, Form, Card } from 'antd';
+import { Table, Input, Modal, Button, Popconfirm, Form, Card, Col } from 'antd';
 
 const FormItem = Form.Item;
+const { TextArea } = Input;
+const InputGroup = Input.Group;
+
 const EditableContext = React.createContext();
 
 const EditableRow = ({ form, index, ...props }) => (
@@ -91,60 +94,113 @@ class EditableCell extends React.Component {
   }
 }
 
-class SupplierModal extends React.Component {
-  state = {
-    loading: false,
-    visible: false,
-  };
+const SupplierAddForm = Form.create()(
+  class extends React.Component {
+    render() {
+      const { visible, onCancel, onCreate, form } = this.props;
+      const { getFieldDecorator } = form;
+      return (
+        <Modal visible={visible} title='Add a new supplier' okText='Add supplier' onCancel={onCancel} onOk={onCreate}>
+          <Form layout='vertical'>
+            <InputGroup size='large'>
+              <Col span={12}>
+                <FormItem label='Supplier name'>
+                  {getFieldDecorator('Product name', {
+                    rules: [
+                      {
+                        required: true,
+                        message: 'Please input the name of Suppleir!',
+                      },
+                    ],
+                  })(<Input type='text' />)}
+                </FormItem>
+              </Col>
+              <Col span={12}>
+                <FormItem label='Supplier email'>
+                  {getFieldDecorator('email', {
+                    rules: [
+                      {
+                        required: true,
+                        message: "Please input the Supplier's email!",
+                      },
+                    ],
+                  })(<Input type='email' />)}
+                </FormItem>
+              </Col>
+            </InputGroup>
 
-  showModal = () => {
-    this.setState({
-      visible: true,
-    });
-  };
-
-  handleOk = () => {
-    this.setState({ loading: true });
-    setTimeout(() => {
-      this.setState({ loading: false, visible: false });
-    }, 3000);
-  };
-
-  handleCancel = () => {
-    this.setState({ visible: false });
-  };
-
-  render() {
-    const { visible, loading } = this.state;
-    return (
-      <div>
-        <Button onClick={this.showModal} type='primary' style={{ marginBottom: 16 }}>
-          Add new supplier
-        </Button>
-        <Modal
-          visible={visible}
-          title='Add new supplier'
-          onOk={this.handleOk}
-          onCancel={this.handleCancel}
-          footer={[
-            <Button key='back' onClick={this.handleCancel}>
-              Cancel
-            </Button>,
-            <Button onClick={this.handleAdd} type='primary' style={{ marginBottom: 16 }}>
-              Add new supplier
-            </Button>,
-          ]}
-        >
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-          <p>Some contents...</p>
+            <FormItem label='Supplier phone no.'>
+              {getFieldDecorator('phone', {
+                rules: [
+                  {
+                    required: true,
+                    message: "Please input the Supplier's phone number!",
+                  },
+                ],
+              })(<Input size='large' type='phone' />)}
+            </FormItem>
+            <FormItem label='Supplier Address'>
+              {getFieldDecorator('address', {
+                rules: [
+                  {
+                    required: true,
+                    message: "Please input the Supplier's Address!",
+                  },
+                ],
+              })(<TextArea rows={2} />)}
+            </FormItem>
+            <FormItem label='City'>
+              {getFieldDecorator('city', {
+                rules: [
+                  {
+                    required: true,
+                    message: "Please input the Supplier's City!",
+                  },
+                ],
+              })(<Input size='large' />)}
+            </FormItem>
+            <FormItem label='Region'>
+              {getFieldDecorator('region', {
+                rules: [
+                  {
+                    required: true,
+                    message: "Please input the Supplier's Region!",
+                  },
+                ],
+              })(<Input size='large' />)}
+            </FormItem>
+            <InputGroup size='large'>
+              <Col span={12}>
+                <FormItem label='Suburb'>
+                  {getFieldDecorator('suburb', {
+                    rules: [
+                      {
+                        required: true,
+                        message: "Please input the Supplier's Suburb!",
+                      },
+                    ],
+                  })(<Input />)}
+                </FormItem>
+              </Col>
+              <Col span={12}>
+                <FormItem label='Country'>
+                  {getFieldDecorator('country', {
+                    rules: [
+                      {
+                        required: true,
+                        message: "Please input the Supplier's Country!",
+                      },
+                    ],
+                  })(<Input />)}
+                </FormItem>
+              </Col>
+            </InputGroup>
+          </Form>
         </Modal>
-      </div>
-    );
+      );
+    }
   }
-}
+);
 
 class SuppliersPage extends React.Component {
   constructor(props) {
@@ -243,6 +299,31 @@ class SuppliersPage extends React.Component {
     this.setState({ dataSource: newData });
   };
 
+  showModal = () => {
+    this.setState({ visible: true });
+  };
+
+  handleCancel = () => {
+    this.setState({ visible: false });
+  };
+
+  handleCreate = () => {
+    const form = this.formRef.props.form;
+    form.validateFields((err, values) => {
+      if (err) {
+        return;
+      }
+
+      console.log('Received values of form: ', values);
+      form.resetFields();
+      this.setState({ visible: false });
+    });
+  };
+
+  saveFormRef = (formRef) => {
+    this.formRef = formRef;
+  };
+
   render() {
     const { dataSource } = this.state;
     const components = {
@@ -267,10 +348,17 @@ class SuppliersPage extends React.Component {
       };
     });
     return (
-      <Card bodyStyle={{ padding: 10 }} id='products-page'>
+      <Card bodyStyle={{ padding: 10 }} id='supplier-page'>
         <div>
-          <SupplierModal />
-
+          <Button type='primary' onClick={this.showModal} style={{ marginBottom: 16 }}>
+            New supplier
+          </Button>
+          <SupplierAddForm
+            wrappedComponentRef={this.saveFormRef}
+            visible={this.state.visible}
+            onCancel={this.handleCancel}
+            onCreate={this.handleCreate}
+          />
           <Table
             components={components}
             rowClassName={() => 'editable-row'}
