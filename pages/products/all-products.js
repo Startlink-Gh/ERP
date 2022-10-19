@@ -1,4 +1,5 @@
 import { Table, Input, Modal, Button, Popconfirm, Form, Card } from 'antd';
+import withAuth from '../../hoc/withAuth';
 
 const FormItem = Form.Item;
 const { TextArea } = Input;
@@ -269,4 +270,4 @@ class EditableTable extends React.Component {
   }
 }
 
-export default EditableTable;
+export default withAuth(EditableTable);

@@ -1,4 +1,5 @@
 import { Table, Input, Modal, Button, Popconfirm, Form, Card } from 'antd';
+import withAuth from '../../hoc/withAuth';
 
 const FormItem = Form.Item;
 const { TextArea } = Input;
@@ -276,4 +277,4 @@ class CategoriesPage extends React.Component {
   }
 }
 
-export default CategoriesPage;
+export default withAuth(CategoriesPage);

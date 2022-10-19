@@ -1,4 +1,4 @@
-import LockScreen from '../components/LockScreen';
+import LockScreen from '../../components/LockScreen';
 
 const LockScreenPage = () => <LockScreen />;
 

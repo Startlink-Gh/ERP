@@ -1,5 +1,6 @@
 import { Table, Input, Modal, Button, Popconfirm, Form, Card } from 'antd';
 import Link from 'next/link';
+import withAuth from '../../hoc/withAuth';
 
 const FormItem = Form.Item;
 const EditableContext = React.createContext();
@@ -219,4 +220,4 @@ class PurchasePage extends React.Component {
   }
 }
 
-export default PurchasePage;
+export default withAuth(PurchasePage);

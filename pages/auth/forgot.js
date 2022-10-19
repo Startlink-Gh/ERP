@@ -1,4 +1,4 @@
-import Forgot from '../components/Forgot';
+import Forgot from '../../components/Forgot';
 
 const ForgotPage = () => <Forgot />;
 

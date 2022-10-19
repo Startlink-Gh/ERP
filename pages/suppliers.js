@@ -1,4 +1,5 @@
 import { Table, Input, Modal, Button, Popconfirm, Form, Card, Col } from 'antd';
+import withAuth from '../hoc/withAuth';
 
 const FormItem = Form.Item;
 const { TextArea } = Input;
@@ -372,4 +373,4 @@ class SuppliersPage extends React.Component {
   }
 }
 
-export default SuppliersPage;
+export default withAuth(SuppliersPage);

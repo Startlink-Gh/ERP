@@ -11,13 +11,7 @@ import { withRouter } from 'next/router';
 
 const { Content } = Layout;
 
-const NonDashboardRoutes = [
-  '/signin',
-  '/signup',
-  '/forgot',
-  '/lockscreen',
-  '/_error'
-];
+const NonDashboardRoutes = ['/auth/signin', '/auth/signup', '/auth/forgot', '/auth/lockscreen', '/_error'];
 
 const Page = ({ router, children }) => {
   const [loading, setLoading] = useState(true);
@@ -31,15 +25,11 @@ const Page = ({ router, children }) => {
   }, [loading]);
 
   return (
-    <Spin tip="Loading..." size="large" spinning={loading}>
+    <Spin tip='Loading...' size='large' spinning={loading}>
       <ThemeProvider theme={theme}>
-        <Container
-          className={`${state.weakColor ? 'weakColor' : ''} ${
-            state.boxed ? 'boxed shadow-sm' : ''
-          }`}
-        >
+        <Container className={`${state.weakColor ? 'weakColor' : ''} ${state.boxed ? 'boxed shadow-sm' : ''}`}>
           {!isNotDashboard && <Header />}
-          <Layout className="workspace">
+          <Layout className='workspace'>
             {!isNotDashboard && (
               <SidebarMenu
                 sidebarTheme={state.darkSidebar ? 'dark' : 'light'}
@@ -50,9 +40,7 @@ const Page = ({ router, children }) => {
             )}
 
             <Layout>
-              <Content>
-                {!isNotDashboard ? <Inner>{children}</Inner> : children}
-              </Content>
+              <Content>{!isNotDashboard ? <Inner>{children}</Inner> : children}</Content>
             </Layout>
           </Layout>
         </Container>

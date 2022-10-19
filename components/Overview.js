@@ -31,6 +31,7 @@ import StatCard from './shared/StatCard';
 import WeatherCard from './shared/WeatherCard';
 import styled from 'styled-components';
 import { theme } from './styles/GlobalStyles';
+import withAuth from '../hoc/withAuth';
 
 const { MonthPicker } = DatePicker;
 
@@ -375,4 +376,4 @@ const Overview = () => {
   );
 };
 
-export default Overview;
+export default withAuth(Overview);
