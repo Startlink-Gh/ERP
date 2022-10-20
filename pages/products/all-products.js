@@ -10,9 +10,33 @@ const Option = Select.Option;
 
 const ProductAddForm = Form.create()(
   class extends React.Component {
+    state = {
+      loading: false,
+      categories: [],
+    };
+
+    fetchCategories = () => {
+      this.setState({ loading: true });
+      reqwest({
+        url: 'http://localhost:3000/api/v1/categories/getCategories',
+        method: 'GET',
+        type: 'json',
+      }).then((data) => {
+        this.setState({
+          loading: false,
+          categories: data.data,
+        });
+      });
+    };
+
+    componentDidMount() {
+      this.fetchCategories();
+    }
+
     render() {
       const { visible, onCancel, onCreate, form } = this.props;
       const { getFieldDecorator } = form;
+      const categories = this.state.categories;
       return (
         <Modal visible={visible} title='Add a new product' okText='Add product' onCancel={onCancel} onOk={onCreate}>
           <Form layout='vertical'>
@@ -36,10 +60,11 @@ const ProductAddForm = Form.create()(
                 ],
               })(
                 <Select>
-                  <Option value='1'>category 1</Option>
-                  <Option value='2'>category 2</Option>
-                  <Option value='3'>category 3</Option>
-                  <Option value='4'>category 4</Option>
+                  {categories ? (
+                    categories.map((category) => <Option value={category.category_id}>{category.category_name}</Option>)
+                  ) : (
+                    <Option>Categories</Option>
+                  )}
                 </Select>
               )}
             </FormItem>
@@ -89,7 +114,6 @@ class ProductsTable extends React.Component {
   handleDelete = (id) => {
     const dataSource = [...this.state.dataSource];
     this.setState({ dataSource: dataSource.filter((item) => item.product_id !== id) });
-
     reqwest({
       url: 'http://localhost:3000/api/v1/products/deleteProduct',
       method: 'DELETE',
@@ -98,7 +122,7 @@ class ProductsTable extends React.Component {
         product_id: id,
       },
     }).then((data) => {
-      Message.success(`Deleted successfully`).then(() => Router.push('/products/all-products'));
+      Message.success(`Deleted successfully`).then(() => this.fetch());
     });
   };
 
@@ -122,7 +146,7 @@ class ProductsTable extends React.Component {
           ...values,
         },
       }).then((data) => {
-        Message.success(`${data.data.name} added successfully`).then(() => Router.push('/products/all-products'));
+        Message.success(`${data.data.name} added successfully`).then(() => this.fetch());
       });
       form.resetFields();
       this.setState({ visible: false });
@@ -165,7 +189,6 @@ class ProductsTable extends React.Component {
           editable: col.editable,
           dataIndex: col.dataIndex,
           title: col.title,
-          handleSave: this.handleSave,
         }),
       };
     });
