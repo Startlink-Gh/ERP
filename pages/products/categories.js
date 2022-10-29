@@ -1,5 +1,4 @@
 import { Table, Input, Modal, Button, Popconfirm, Form, Card, Message } from 'antd';
-import Router from 'next/router';
 import reqwest from 'reqwest';
 import withAuth from '../../hoc/withAuth';
 
@@ -118,7 +117,6 @@ class CategoriesPage extends React.Component {
   };
 
   fetch = (params = {}) => {
-    console.log('params:', params);
     this.setState({ loading: true });
     reqwest({
       url: 'http://localhost:3000/api/v1/categories/getCategories',
