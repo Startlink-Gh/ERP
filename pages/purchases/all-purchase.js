@@ -1,5 +1,6 @@
-import { Table, Input, Modal, Button, Popconfirm, Form, Card } from 'antd';
+import { Table, Input, Modal, Button, Popconfirm, Form, Card, Message, Row, Col } from 'antd';
 import Link from 'next/link';
+import reqwest from 'reqwest';
 import withAuth from '../../hoc/withAuth';
 
 const FormItem = Form.Item;
@@ -94,22 +95,28 @@ class EditableCell extends React.Component {
 }
 
 class PurchasePage extends React.Component {
+  state = {
+    visible: false,
+    dataSource: [],
+    loading: false,
+    count: 0,
+  };
   constructor(props) {
     super(props);
     this.columns = [
       {
         title: 'document #',
-        dataIndex: 'document',
+        dataIndex: 'document_no',
 
         editable: true,
       },
       {
         title: 'Supplier ID',
-        dataIndex: 'supplier',
+        dataIndex: 'supplier_id',
       },
       {
         title: 'Expected',
-        dataIndex: 'expected',
+        dataIndex: 'expected_date',
       },
       {
         title: 'Arrived',
@@ -117,7 +124,7 @@ class PurchasePage extends React.Component {
       },
       {
         title: 'Arrived on',
-        dataIndex: 'arrived_on',
+        dataIndex: 'arrived_date',
       },
       {
         title: 'Actions',
@@ -125,30 +132,19 @@ class PurchasePage extends React.Component {
         width: '10%',
         render: (text, record) =>
           this.state.dataSource.length >= 1 ? (
-            <Popconfirm title='Sure to delete?' onConfirm={() => this.handleDelete(record.key)}>
-              <a href='javascript:;'>Delete</a>
-            </Popconfirm>
+            <Row>
+              <Col span={12}>
+                <a href='javascript:;'>View</a>
+              </Col>
+              <Col span={12}>
+                <Popconfirm title='Sure to delete?' onConfirm={() => this.handleDelete(record.key)}>
+                  <a href='javascript:;'>Delete</a>
+                </Popconfirm>
+              </Col>
+            </Row>
           ) : null,
       },
     ];
-
-    this.state = {
-      dataSource: [
-        {
-          key: '0',
-          name: 'Edward King 0',
-          age: '32',
-          address: 'London, Park Lane no. 0',
-        },
-        {
-          key: '1',
-          name: 'Edward King 1',
-          age: '32',
-          address: 'London, Park Lane no. 1',
-        },
-      ],
-      count: 2,
-    };
   }
 
   handleDelete = (key) => {
@@ -156,30 +152,29 @@ class PurchasePage extends React.Component {
     this.setState({ dataSource: dataSource.filter((item) => item.key !== key) });
   };
 
-  handleAdd = () => {
-    const { count, dataSource } = this.state;
-    const newData = {
-      key: count,
-      name: `Edward King ${count}`,
-      age: 32,
-      address: `London, Park Lane no. ${count}`,
-    };
-    this.setState({
-      dataSource: [...dataSource, newData],
-      count: count + 1,
+  handleAdd = () => {};
+
+  handleSave = (row) => {};
+
+  fetch = (params = {}) => {
+    console.log('params:', params);
+    this.setState({ loading: true });
+    reqwest({
+      url: 'http://localhost:3000/api/v1/purchase/getAllPurchases',
+      method: 'GET',
+      type: 'json',
+    }).then((data) => {
+      this.setState({
+        loading: false,
+        dataSource: data.data,
+        count: data.data.length,
+      });
     });
   };
 
-  handleSave = (row) => {
-    const newData = [...this.state.dataSource];
-    const index = newData.findIndex((item) => row.key === item.key);
-    const item = newData[index];
-    newData.splice(index, 1, {
-      ...item,
-      ...row,
-    });
-    this.setState({ dataSource: newData });
-  };
+  componentDidMount() {
+    this.fetch();
+  }
 
   render() {
     const { dataSource } = this.state;
